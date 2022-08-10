@@ -1,5 +1,6 @@
 import { item, BaseItem } from "./item.interface";
 import { Items } from "./items.interface";
+import mongoose from "mongoose";
 
 let items: Items = {
     1 : {
@@ -14,33 +15,39 @@ let items: Items = {
     }
 };
 
-export const findAll = async (): Promise<item[]> => Object.values(items);
-export const find = async (id: number): Promise<item> => items[id] ;
+const itemSchema = new mongoose.Schema({
+    id: Number,
+    name: String,
+    price: Number
+});
+
+const itemModel = mongoose.model<item>("item", itemSchema);
+
+export const findAll = async (): Promise<item[]> => itemModel.find();
+export const find = async (id: number): Promise<item | null> => itemModel.findOne({id:id });
 
 export const create = async (newItem: BaseItem): Promise<item> => {
     const id = new Date().valueOf();
     console.log(id,"iddddddddd");
-
-    items[id] = {
+    let result = await itemModel.create({
         id,
         ...newItem
-    };
+    });
 
-    return items[id]
+    return result;
 };
 
 export const update = async (id: number, itemUpdate: BaseItem): Promise<item | null> => {
-    const itemss = await find(id);
+    const itemss = await itemModel.findOneAndUpdate({id:id},{...itemUpdate},{new: true});
     if (!itemss) {
         return null;
     };
-    items[id] = {id, ...itemUpdate};
 
-    return items[id]
+    return itemss;
 };
 
 export const remove  = async (id: number): Promise<null | void> =>{
-    const itemss = await find(id);
+    const itemss = "";
 
     if (!itemss) {
         return null;

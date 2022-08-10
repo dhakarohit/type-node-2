@@ -35,7 +35,7 @@ itemRouter.get("/", async(req: Request, res: Response) => {
 itemRouter.get("/:id",async (req: Request, res: Response) => {
     const id: number = parseInt(req.params.id, 10);
     try { 
-        const item: item = await ItemService.find(id); 
+        const item = await ItemService.find(id); 
         if (item) {
             res.status(200).send(item)
         };
@@ -61,7 +61,8 @@ itemRouter.post("/", async(req: Request, res: Response)=>{
 itemRouter.put("/:id", async(req: Request, res: Response) =>{
     const id: number = parseInt(req.params.id, 10);
     try {
-        const existinfItem: item = await ItemService.find(id);
+        const existinfItem = "";
+        // await ItemService.find(id);
         const itemBody: item = req.body;
         if (existinfItem) {
             const itemUpdate = await ItemService.update(id, itemBody);
